@@ -1,9 +1,6 @@
 import Link from 'next/link'
 import GradientWaves from './GradientWaves'
-
-function ArrowIcon() {
-  return <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11m0 0-4-4m4 4-4 4" stroke="currentColor" strokeWidth="1.5" /></svg>
-}
+import { whatsappLink } from '../contact'
 
 export default function SiteFooter() {
   return <footer className="np-footer">
@@ -11,9 +8,9 @@ export default function SiteFooter() {
       <div className="np-footer-waves" aria-hidden="true">
         <GradientWaves
           className="np-footer-waves-canvas"
-          horizonColor="#49225B"
-          waveColor="#6E3482"
-          crestColor="#A56ABD"
+          horizonColor="#79518D"
+          waveColor="#69377D"
+          crestColor="#C58BD9"
           backgroundColor="transparent"
           speed={0.16}
           amplitude={2.2}
@@ -27,13 +24,15 @@ export default function SiteFooter() {
       </div>
       <div className="np-footer-frame">
         <div className="np-footer-topline">
-          <Link className="np-footer-monogram" href="/" aria-label="North Production &mdash; beranda">N</Link>
+          <Link className="np-footer-logo-link" href="/" aria-label="North Production — beranda">
+            <img className="np-footer-logo" src="/north-production-logo.png" alt="" />
+            <span className="np-footer-brand-name">NORTH PRODUCTION</span>
+          </Link>
           <p>PHOTO &middot; VIDEO<br />PRODUCTION</p>
         </div>
 
         <Link className="np-footer-cta" href="/#contact">
           <span>Mulai proyek kreatif Anda</span>
-          <span className="np-footer-cta-icon"><ArrowIcon /></span>
         </Link>
 
         <div className="np-footer-grid">
@@ -54,10 +53,9 @@ export default function SiteFooter() {
           </div>
           <div className="np-footer-col np-footer-featured">
             <h2 className="np-footer-col-title">Terhubung</h2>
-            <a href="https://www.instagram.com/north.production/" target="_blank" rel="noreferrer">Instagram <ArrowIcon /></a>
-            <a href="https://wa.me/6285600604388" target="_blank" rel="noreferrer">WhatsApp <ArrowIcon /></a>
-            <a href="mailto:jogjacreativeproduction@gmail.com">Email <ArrowIcon /></a>
-            <Link className="np-footer-message" href="/#contact">Diskusikan proyek <ArrowIcon /></Link>
+            <a href="https://www.instagram.com/north.production/" target="_blank" rel="noreferrer">Instagram</a>
+            <a href={whatsappLink('Halo, saya ingin menghubungi North Production.')} target="_blank" rel="noreferrer">WhatsApp</a>
+            <a className="np-footer-message" href={whatsappLink('Halo, saya ingin mendiskusikan proyek bersama North Production.')} target="_blank" rel="noreferrer">Diskusikan proyek</a>
           </div>
         </div>
 

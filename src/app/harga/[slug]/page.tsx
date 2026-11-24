@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import SiteFooter from '../../components/SiteFooter'
 import SiteHeader from '../../components/SiteHeader'
+import { whatsappLink } from '../../contact'
 import { priceCategories } from '../packages'
 
 type PricePageProps = { params: Promise<{ slug: string }> }
@@ -23,6 +24,7 @@ export default async function PricePage({ params }: PricePageProps) {
   const { slug } = await params
   const category = priceCategories.find(item => item.slug === slug)
   if (!category) notFound()
+  const quoteWhatsAppHref = whatsappLink(`Halo, saya ingin meminta penawaran untuk ${category.name}.`)
 
   return <>
     <a className="skip-link" href="#main">Lewati ke konten utama</a>
@@ -36,8 +38,8 @@ export default async function PricePage({ params }: PricePageProps) {
           <p className="np-section-tag">{category.eyebrow}</p>
           <h1>{category.name}</h1>
           <p className="service-detail-summary">{category.summary}</p>
-          <a href={`mailto:jogjacreativeproduction@gmail.com?subject=${encodeURIComponent(`Penawaran ${category.name}`)}`} className="np-btn-primary">
-            Minta penawaran <span aria-hidden="true">↗</span>
+          <a href={quoteWhatsAppHref} className="np-btn-primary" target="_blank" rel="noreferrer">
+            Minta penawaran
           </a>
         </div>
         <div className="service-detail-image">
@@ -55,14 +57,14 @@ export default async function PricePage({ params }: PricePageProps) {
           <h2>Faktor yang dibahas</h2>
           <ul>{category.factors.map(factor => <li key={factor}>{factor}</li>)}</ul>
           <p className="service-detail-note">Kirim brief dan jadwal yang diinginkan agar tim kami dapat menyiapkan penawaran yang sesuai.</p>
-          <Link href="/layanan" className="service-text-link">Jelajahi layanan North Production <span aria-hidden="true">↗</span></Link>
+          <Link href="/layanan" className="service-text-link">Jelajahi layanan North Production</Link>
         </div>
       </section>
       <section className="service-detail-cta">
         <p className="np-section-tag">North Production · Yogyakarta</p>
         <h2>Diskusikan kebutuhan produksi Anda.</h2>
         <p>Bagikan jenis proyek, jadwal, dan hasil akhir yang Anda butuhkan.</p>
-        <a href={`mailto:jogjacreativeproduction@gmail.com?subject=${encodeURIComponent(`Penawaran ${category.name}`)}`} className="np-btn-primary">Hubungi kami <span aria-hidden="true">↗</span></a>
+        <a href={quoteWhatsAppHref} className="np-btn-primary" target="_blank" rel="noreferrer">Hubungi kami</a>
       </section>
     </main>
     <SiteFooter />

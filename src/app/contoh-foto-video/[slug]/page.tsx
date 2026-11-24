@@ -39,7 +39,7 @@ export default async function SamplePage({ params }: SamplePageProps) {
           <p className="np-section-tag">Contoh foto dan video · 0{sampleIndex + 1}</p>
           <h1>{sample.title}</h1>
           <p className="service-detail-summary">{sample.description}</p>
-          <Link href="/#contact" className="np-btn-primary">Diskusikan proyek serupa <span aria-hidden="true">↗</span></Link>
+          <Link href="/#contact" className="np-btn-primary">Diskusikan proyek serupa</Link>
         </div>
         <div className="service-detail-image">
           <img src={sample.src} alt={sample.alt} />
@@ -59,17 +59,17 @@ export default async function SamplePage({ params }: SamplePageProps) {
             <li>Format foto atau video sesuai kebutuhan publikasi</li>
             <li>Lokasi serta kebutuhan produksi</li>
           </ul>
-          <Link href="/layanan" className="service-text-link">Lihat layanan produksi <span aria-hidden="true">↗</span></Link>
+          <Link href="/layanan" className="service-text-link">Lihat layanan produksi</Link>
         </div>
       </section>
       <section className="service-detail-more">
         <div className="service-more-heading">
           <div><p className="np-section-tag">Pilihan visual lain</p><h2>Jelajahi portofolio</h2></div>
-          <Link href="/contoh-foto-video">Semua contoh <span aria-hidden="true">↗</span></Link>
+          <Link href="/contoh-foto-video">Semua contoh</Link>
         </div>
         <div className="service-more-grid">
           {relatedSamples.map(item => <Link href={`/contoh-foto-video/${item.slug}`} className="service-more-card" key={item.slug}>
-            <span>{item.label}</span><h3>{item.title}</h3><p>{item.description}</p><span className="service-more-arrow" aria-hidden="true">↗</span>
+            <span>{item.label}</span><h3>{item.title}</h3><p>{item.description}</p>
           </Link>)}
         </div>
       </section>

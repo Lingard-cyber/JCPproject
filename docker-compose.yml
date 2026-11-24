@@ -1,0 +1,16 @@
+services:
+  web:
+    build: .
+    container_name: fotovideojogja
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+    networks:
+      - n8n_default
+
+networks:
+  n8n_default:
+    external: true
+    name: n8n_default

@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { productionServices } from '../layanan/services'
 import { priceCategories } from '../harga/packages'
 import { workSamples } from '../contoh-foto-video/samples'
+import { whatsappLink } from '../contact'
 
 const dropdowns = [
   {
@@ -20,9 +21,8 @@ const dropdowns = [
     label: 'Daftar Harga',
     href: '/harga',
     items: [
-      { label: 'Lihat daftar harga', href: '/harga' },
       ...priceCategories.map(category => ({ label: category.name, href: `/harga/${category.slug}` })),
-      { label: 'Minta penawaran', href: 'mailto:jogjacreativeproduction@gmail.com?subject=Permintaan%20Penawaran' },
+      { label: 'Minta penawaran', href: whatsappLink('Halo, saya ingin meminta penawaran dari North Production.') },
     ],
   },
   {
@@ -36,10 +36,6 @@ const dropdowns = [
 
 function ChevronDown() {
   return <svg className="nav-chevron" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="m1 1 5 5 5-5" stroke="currentColor" strokeWidth="1.5" /></svg>
-}
-
-function ArrowIcon() {
-  return <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11m0 0-4-4m4 4-4 4" stroke="currentColor" strokeWidth="1.5" /></svg>
 }
 
 export default function SiteHeader() {
@@ -72,7 +68,12 @@ export default function SiteHeader() {
         let surface: HTMLElement | null = section
         let rgb: number[] | null = null
         while (surface && surface.id !== 'main') {
-          const background = window.getComputedStyle(surface).backgroundColor
+          const style = window.getComputedStyle(surface)
+          if (style.backgroundImage !== 'none') {
+            rgb = [16, 24, 32]
+            break
+          }
+          const background = style.backgroundColor
           const channels = background.match(/[\d.]+/g)?.map(Number)
           if (channels && channels.length >= 3 && (channels.length < 4 || channels[3] > 0.05)) {
             rgb = channels.slice(0, 3).map(channel => Math.round(channel))
@@ -84,7 +85,7 @@ export default function SiteHeader() {
         if (!rgb) {
           const background = window.getComputedStyle(document.body).backgroundColor
           const channels = background.match(/[\d.]+/g)?.map(Number)
-          rgb = channels?.length && channels.length >= 3 ? channels.slice(0, 3).map(Math.round) : [18, 13, 22]
+          rgb = channels?.length && channels.length >= 3 ? channels.slice(0, 3).map(Math.round) : [16, 24, 32]
         }
 
         nav.style.setProperty('--nav-surface-rgb', rgb.join(', '))
@@ -127,8 +128,8 @@ export default function SiteHeader() {
   return <>
     <header className={`np-nav${scrolled ? ' is-scrolled' : ''}`}>
       <Link href="/" className="nav-brand" aria-label="North Production, ke beranda">
-        <span className="nav-brand-name">NORTH PRODUCTION</span>
-        <span className="nav-brand-sub">Jogja Creative Production</span>
+        <img className="nav-brand-logo" src="/north-production-logo.png" alt="" />
+        <span className="nav-brand-title">NORTH PRODUCTION</span>
       </Link>
 
       <nav className="nav-links" aria-label="Navigasi utama">
@@ -143,14 +144,14 @@ export default function SiteHeader() {
             {dropdown.label}<ChevronDown />
           </button>
           {openDropdown === dropdown.label && <div className="nav-drop-panel">
-            {dropdown.items.map(item => item.href.startsWith('mailto:')
-              ? <a href={item.href} key={item.href} onClick={() => setOpenDropdown(null)}>{item.label}</a>
+            {dropdown.items.map(item => item.href.startsWith('https://wa.me/')
+              ? <a href={item.href} key={item.href} target="_blank" rel="noreferrer" onClick={() => setOpenDropdown(null)}>{item.label}</a>
               : <Link href={item.href} key={item.href} onClick={() => setOpenDropdown(null)}>{item.label}</Link>)}
           </div>}
         </div>)}
       </nav>
 
-      <Link href="/#contact" className="nav-contact" onClick={() => setOpenDropdown(null)}>Kontak <ArrowIcon /></Link>
+      <a href="/#ikuti-kami" className="nav-contact" onClick={() => setOpenDropdown(null)}>Kontak</a>
 
       <button
         className="nav-hamburger"
@@ -178,7 +179,7 @@ export default function SiteHeader() {
       >
         <span className="menu-kicker">North Production · Navigasi</span>
         <div className="menu-page-links">
-          <Link href="/" onClick={closeMobileMenu}><span className="menu-link-number">01</span><span>Home</span><ArrowIcon /></Link>
+          <Link href="/" onClick={closeMobileMenu}><span className="menu-link-number">01</span><span>Home</span></Link>
           {dropdowns.map((dropdown, index) => <div className={`menu-dropdown${openDropdown === dropdown.label ? ' is-open' : ''}`} key={dropdown.label}>
             <button
               type="button"
@@ -190,14 +191,14 @@ export default function SiteHeader() {
               <ChevronDown />
             </button>
             {openDropdown === dropdown.label && <div className="menu-sub-links">
-              {dropdown.items.map(item => item.href.startsWith('mailto:')
-                ? <a href={item.href} key={item.href} onClick={closeMobileMenu}>{item.label}<ArrowIcon /></a>
-                : <Link href={item.href} key={item.href} onClick={closeMobileMenu}>{item.label}<ArrowIcon /></Link>)}
+              {dropdown.items.map(item => item.href.startsWith('https://wa.me/')
+              ? <a href={item.href} key={item.href} target="_blank" rel="noreferrer" onClick={closeMobileMenu}>{item.label}</a>
+              : <Link href={item.href} key={item.href} onClick={closeMobileMenu}>{item.label}</Link>)}
             </div>}
           </div>)}
-          <Link href="/#contact" onClick={closeMobileMenu}><span className="menu-link-number">05</span><span>Kontak</span><ArrowIcon /></Link>
+          <a href="/#ikuti-kami" onClick={closeMobileMenu}><span className="menu-link-number">05</span><span>Kontak</span></a>
         </div>
-        <Link className="menu-contact-link" href="/#contact" onClick={closeMobileMenu}>Mulai Proyek <ArrowIcon /></Link>
+        <a className="menu-contact-link" href={whatsappLink('Halo, saya ingin memulai proyek bersama North Production.')} target="_blank" rel="noreferrer" onClick={closeMobileMenu}>Mulai Proyek</a>
       </motion.nav>}
     </AnimatePresence>
   </>

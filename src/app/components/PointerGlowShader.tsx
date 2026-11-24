@@ -18,10 +18,10 @@ uniform float u_scale;
 uniform float u_intensity;
 
 // Deep plum field with a soft lavender and pink pointer glow.
-vec3 col0 = vec3(0.027, 0.024, 0.043); // #07060b
-vec3 col1 = vec3(0.286, 0.133, 0.357); // #49225b
-vec3 col2 = vec3(0.906, 0.859, 0.937); // #e7dbef
-vec3 col3 = vec3(0.647, 0.416, 0.741); // #a56abd
+vec3 col0 = vec3(0.043, 0.063, 0.086); // #0B1016
+vec3 col1 = vec3(0.090, 0.149, 0.220); // #172638
+vec3 col2 = vec3(0.953, 0.929, 0.961); // #F3EDF5
+vec3 col3 = vec3(0.475, 0.318, 0.553); // #79518D
 
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);

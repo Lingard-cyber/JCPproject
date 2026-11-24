@@ -42,7 +42,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
           <h1>{service.name}</h1>
           <p className="service-detail-summary">{service.summary}</p>
           <Link href={`/#contact`} className="np-btn-primary">
-            Diskusikan proyek <span aria-hidden="true">↗</span>
+            Diskusikan proyek
           </Link>
         </div>
         <div className="service-detail-image">
@@ -65,21 +65,20 @@ export default async function ServicePage({ params }: ServicePageProps) {
           <p className="service-detail-note">
             Setiap proyek dibahas berdasarkan tujuan, lokasi, jadwal, dan hasil akhir yang Anda butuhkan.
           </p>
-          <Link href="/harga" className="service-text-link">Lihat ruang lingkup penawaran <span aria-hidden="true">↗</span></Link>
+          <Link href="/harga" className="service-text-link">Lihat ruang lingkup penawaran</Link>
         </div>
       </section>
 
       <section className="service-detail-more">
         <div className="service-more-heading">
           <div><p className="np-section-tag">Layanan lainnya</p><h2>Jelajahi layanan kami</h2></div>
-          <Link href="/layanan">Semua layanan <span aria-hidden="true">↗</span></Link>
+          <Link href="/layanan">Semua layanan</Link>
         </div>
         <div className="service-more-grid">
           {otherServices.map(item => <Link href={`/layanan/${item.slug}`} className="service-more-card" key={item.slug}>
             <span>0{productionServices.findIndex(serviceItem => serviceItem.slug === item.slug) + 1}</span>
             <h3>{item.name}</h3>
             <p>{item.summary}</p>
-            <span className="service-more-arrow" aria-hidden="true">↗</span>
           </Link>)}
         </div>
       </section>
@@ -88,7 +87,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
         <p className="np-section-tag">North Production · Yogyakarta</p>
         <h2>Siapkan proyek {service.name.toLowerCase()} Anda.</h2>
         <p>Ceritakan kebutuhan, jadwal, dan tujuan visual Anda kepada tim kami.</p>
-        <Link href="/#contact" className="np-btn-primary">Mulai diskusi <span aria-hidden="true">↗</span></Link>
+        <Link href="/#contact" className="np-btn-primary">Mulai diskusi</Link>
       </section>
     </main>
     <SiteFooter />
