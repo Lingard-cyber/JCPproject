@@ -45,18 +45,15 @@ Jalankan `npm run build` sebelum `npm run start`.
 
 Workflow di `.github/workflows/deploy.yml` menjalankan build pada pull request dan setiap push ke `main`. Setelah build di `main` berhasil, workflow menyalin file commit tersebut ke server melalui SSH, lalu menjalankan `docker compose up -d --build`.
 
-Sebelum deploy pertama, buka **Settings > Secrets and variables > Actions** di repositori GitHub dan buat repository secrets berikut:
+Sebelum deploy pertama, buka **Settings > Secrets and variables > Actions** di repositori GitHub dan buat repository secret berikut:
 
 | Nama | Isi |
 | --- | --- |
-| `DEPLOY_HOST` | Nama host atau alamat IP server, tanpa `https://` atau nama pengguna |
-| `DEPLOY_USER` | Nama pengguna SSH di server |
 | `VPS_SSH_KEY` | Isi lengkap private key SSH yang dapat masuk sebagai pengguna tersebut |
-| `DEPLOY_KNOWN_HOSTS` | Entri `known_hosts` untuk host SSH server, dengan fingerprint yang sudah diverifikasi |
 
-Di tab **Variables**, buat repository variable `DEPLOY_PATH` berisi path absolut direktori proyek di server. Pengguna SSH harus dapat menulis ke direktori tersebut dan menjalankan `rsync` serta `docker compose`. Sinkronisasi menghapus file sumber yang sudah tidak ada di repositori, sambil mempertahankan `.env*`, `node_modules`, `.next`, `dist`, dan `out` di server. Docker network eksternal `n8n_default` juga harus tersedia sesuai `docker-compose.yml`.
+Alamat VPS, pengguna SSH, host key publik, dan direktori proyek sudah tercantum di workflow. Jika VPS atau host key berubah, perbarui nilai tersebut di `.github/workflows/deploy.yml`. Pengguna SSH harus dapat menulis ke direktori proyek dan menjalankan `rsync` serta `docker compose`. Sinkronisasi menghapus file sumber yang sudah tidak ada di repositori, sambil mempertahankan `.env*`, `node_modules`, `.next`, `dist`, dan `out` di server. Docker network eksternal `n8n_default` juga harus tersedia sesuai `docker-compose.yml`.
 
-Setelah konfigurasi tersimpan, jalankan ulang workflow yang gagal melalui tab **Actions**, atau push commit baru ke `main`. Jangan menyimpan private key di file proyek.
+Setelah secret `VPS_SSH_KEY` tersedia, push workflow terbaru ke `main` agar GitHub Actions menjalankan versi yang diperbarui. Jangan menyimpan private key di file proyek.
 
 ## Struktur halaman
 
