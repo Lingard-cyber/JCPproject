@@ -20,6 +20,8 @@ Website company profile untuk **North Production**, layanan produksi foto dan vi
 
 ## Menjalankan secara lokal
 
+Tidak ada variabel lingkungan yang wajib diisi. File `.env.local` dapat dibiarkan tanpa nilai; secret SSH pada workflow deploy hanya digunakan oleh GitHub Actions.
+
 Pastikan Node.js dan npm sudah terpasang, kemudian dari folder proyek jalankan:
 
 ```bash
@@ -38,6 +40,23 @@ npm run start  # Jalankan build produksi
 ```
 
 Jalankan `npm run build` sebelum `npm run start`.
+
+## Deploy otomatis
+
+Workflow di `.github/workflows/deploy.yml` menjalankan build pada pull request dan setiap push ke `main`. Setelah build di `main` berhasil, workflow menyalin file commit tersebut ke server melalui SSH, lalu menjalankan `docker compose up -d --build`.
+
+Sebelum deploy pertama, buka **Settings > Secrets and variables > Actions** di repositori GitHub dan buat repository secrets berikut:
+
+| Nama | Isi |
+| --- | --- |
+| `DEPLOY_HOST` | Nama host atau alamat IP server, tanpa `https://` atau nama pengguna |
+| `DEPLOY_USER` | Nama pengguna SSH di server |
+| `VPS_SSH_KEY` | Isi lengkap private key SSH yang dapat masuk sebagai pengguna tersebut |
+| `DEPLOY_KNOWN_HOSTS` | Entri `known_hosts` untuk host SSH server, dengan fingerprint yang sudah diverifikasi |
+
+Di tab **Variables**, buat repository variable `DEPLOY_PATH` berisi path absolut direktori proyek di server. Pengguna SSH harus dapat menulis ke direktori tersebut dan menjalankan `rsync` serta `docker compose`. Sinkronisasi menghapus file sumber yang sudah tidak ada di repositori, sambil mempertahankan `.env*`, `node_modules`, `.next`, `dist`, dan `out` di server. Docker network eksternal `n8n_default` juga harus tersedia sesuai `docker-compose.yml`.
+
+Setelah konfigurasi tersimpan, jalankan ulang workflow yang gagal melalui tab **Actions**, atau push commit baru ke `main`. Jangan menyimpan private key di file proyek.
 
 ## Struktur halaman
 

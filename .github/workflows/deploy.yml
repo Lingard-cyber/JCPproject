@@ -1,6 +1,9 @@
-name: Deploy production
+name: Build and deploy production
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
@@ -9,37 +12,72 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: production-deploy
-  cancel-in-progress: false
-
 jobs:
-  deploy:
-    name: Deploy to Docker Compose server
+  build:
+    name: Build Next.js
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy over SSH
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
-          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+  deploy:
+    name: Deploy to Docker Compose server
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: production-deploy
+      cancel-in-progress: false
+    env:
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      DEPLOY_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+      DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+      DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check deployment configuration
         run: |
           set -euo pipefail
-
           : "${DEPLOY_HOST:?Add the DEPLOY_HOST repository secret}"
           : "${DEPLOY_USER:?Add the DEPLOY_USER repository secret}"
-          : "${DEPLOY_SSH_KEY:?Add the DEPLOY_SSH_KEY repository secret}"
+          : "${DEPLOY_SSH_KEY:?Add the VPS_SSH_KEY repository secret}"
           : "${DEPLOY_KNOWN_HOSTS:?Add the DEPLOY_KNOWN_HOSTS repository secret}"
           : "${DEPLOY_PATH:?Add the DEPLOY_PATH repository variable}"
 
+      - name: Prepare SSH
+        run: |
+          set -euo pipefail
           install -m 700 -d "$HOME/.ssh"
           printf '%s\n' "$DEPLOY_SSH_KEY" > "$HOME/.ssh/deploy_key"
           chmod 600 "$HOME/.ssh/deploy_key"
           printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
           chmod 600 "$HOME/.ssh/known_hosts"
 
+      - name: Sync project to server
+        run: |
+          set -euo pipefail
+          rsync -az --delete \
+            --exclude='.git/' \
+            --exclude='.env*' \
+            --exclude='node_modules/' \
+            --exclude='.next/' \
+            --exclude='dist/' \
+            --exclude='out/' \
+            --exclude='next-env.d.ts' \
+            --exclude='*.tsbuildinfo' \
+            -e "ssh -i $HOME/.ssh/deploy_key -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts" \
+            ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
+
+      - name: Rebuild and start containers
+        run: |
+          set -euo pipefail
           printf -v remote_command 'bash -s -- %q' "$DEPLOY_PATH"
           ssh \
             -i "$HOME/.ssh/deploy_key" \
@@ -52,7 +90,6 @@ jobs:
           set -euo pipefail
 
           cd "$1"
-          git pull --ff-only origin main
           docker compose up -d --build
           docker compose ps
           REMOTE
