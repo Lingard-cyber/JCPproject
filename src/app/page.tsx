@@ -1,9 +1,9 @@
 'use client'
 
 import { motion, useReducedMotion } from 'motion/react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import SiteHeader from './components/SiteHeader'
 import SiteFooter from './components/SiteFooter'
-import SocialGallery from './components/SocialGallery'
 import { whatsappLink } from './contact'
 
 /* ─────────────────────────────────────────
@@ -125,6 +125,15 @@ const works = [
   },
 ]
 
+const socialGallery: { shortcode: string; image?: string }[] = [
+  { shortcode: 'DQd7UgJk8ea', image: '/social/DQd7UgJk8ea.webp' },
+  { shortcode: 'DQYMdZIk7dD', image: '/social/DQYMdZIk7dD.webp' },
+  { shortcode: 'DQydjeAk6e5', image: '/social/DQydjeAk6e5.webp' },
+  { shortcode: 'DQycrvHk1XJ', image: '/social/DQycrvHk1XJ.webp' },
+  { shortcode: 'DQk6H57k39D' },
+  { shortcode: 'DRoAEhCE-4N' },
+]
+
 const marqueeItems = [
   'VISUAL STORIES, MADE FOR EVERY BRAND', '✳',
   'PHOTO & VIDEO PRODUCTION', '✦',
@@ -136,6 +145,25 @@ const marqueeItems = [
 ───────────────────────────────────────── */
 export default function NorthProductionPage() {
   const rm = useReducedMotion()
+  const socialTrackRef = useRef<HTMLDivElement>(null)
+  const [isSocialPaused, setIsSocialPaused] = useState(false)
+
+  const scrollSocial = useCallback((direction: -1 | 1) => {
+    const track = socialTrackRef.current
+    if (!track) return
+    const isAtEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2
+    const card = track.firstElementChild
+    const cardWidth = card instanceof HTMLElement ? card.getBoundingClientRect().width : track.clientWidth * 0.8
+    const gap = Number.parseFloat(window.getComputedStyle(track).columnGap) || 0
+    const target = direction > 0 && isAtEnd ? 0 : track.scrollLeft + direction * (cardWidth + gap)
+    track.scrollTo({ left: Math.max(0, target), behavior: rm ? 'auto' : 'smooth' })
+  }, [rm])
+
+  useEffect(() => {
+    if (rm || isSocialPaused) return
+    const timer = window.setInterval(() => scrollSocial(1), 3000)
+    return () => window.clearInterval(timer)
+  }, [isSocialPaused, rm, scrollSocial])
 
   const fade = rm
     ? {}
@@ -359,7 +387,68 @@ export default function NorthProductionPage() {
         </section>
 
         {/* ════════ SOCIAL ════════ */}
-        <SocialGallery />
+        <section className="np-social" id="ikuti-kami" aria-label="Instagram North Production">
+          <div className="np-social-gallery-heading">
+            <div>
+              <p className="np-social-label">Follow Us</p>
+              <a href="https://www.instagram.com/north.production/" target="_blank" rel="noreferrer" className="np-social-handle">
+                @NORTH.<em>PRODUCTION</em>
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M4.5 11.5 11.5 4.5M5 4.5h6.5V11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </a>
+            </div>
+            <div className="np-social-actions">
+              <div className="np-social-controls" aria-label="Navigasi foto Instagram">
+                <button type="button" onClick={() => scrollSocial(-1)} aria-label="Foto sebelumnya">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m0 0 7-7m-7 7 7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </button>
+                <button type="button" onClick={() => scrollSocial(1)} aria-label="Foto berikutnya">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m0 0-7-7m7 7-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            className="np-social-grid"
+            ref={socialTrackRef}
+            onPointerEnter={() => setIsSocialPaused(true)}
+            onPointerLeave={() => setIsSocialPaused(false)}
+            onFocusCapture={() => setIsSocialPaused(true)}
+            onBlurCapture={() => setIsSocialPaused(false)}
+          >
+            {socialGallery.map((post, index) => (
+              <article className="np-social-photo" key={post.shortcode}>
+                {post.image ? (
+                  <a href={`https://www.instagram.com/p/${post.shortcode}/`} target="_blank" rel="noreferrer" aria-label={`Buka unggahan Instagram ${index + 1}`}>
+                    <img src={post.image} alt={`Foto dari unggahan Instagram North Production ${index + 1}`} loading="lazy" />
+                  </a>
+                ) : (
+                  <>
+                    <iframe
+                      className="np-social-embed"
+                      src={`https://www.instagram.com/p/${post.shortcode}/embed/?hidecaption=true`}
+                      title={`Unggahan Instagram North Production ${index + 1}`}
+                      loading="lazy"
+                      scrolling="no"
+                      allow="encrypted-media; picture-in-picture"
+                      tabIndex={-1}
+                      allowFullScreen
+                    />
+                    <a
+                      className="np-social-embed-link"
+                      href={`https://www.instagram.com/p/${post.shortcode}/`}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={`Buka unggahan Instagram ${index + 1}`}
+                    />
+                  </>
+                )}
+              </article>
+            ))}
+          </div>
+          <div className="np-social-rule" aria-hidden="true" />
+        </section>
 
         {/* ════════ CTA BAND ════════ */}
         <motion.section className="np-cta-band" id="contact" {...fade}>
