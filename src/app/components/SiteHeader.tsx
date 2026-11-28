@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { AnimatePresence, motion } from 'motion/react'
+import Link from './SiteLink'
 import { productionServices } from '../layanan/services'
 import { priceCategories } from '../harga/packages'
 import { workSamples } from '../contoh-foto-video/samples'
@@ -151,7 +151,7 @@ export default function SiteHeader() {
         </div>)}
       </nav>
 
-      <a href="/#ikuti-kami" className="nav-contact" onClick={() => setOpenDropdown(null)}>Kontak</a>
+      <a href={whatsappLink('Halo, saya ingin menghubungi North Production.')} className="nav-contact" target="_blank" rel="noreferrer" onClick={() => setOpenDropdown(null)}>Kontak</a>
 
       <button
         className="nav-hamburger"
@@ -192,13 +192,13 @@ export default function SiteHeader() {
             </button>
             {openDropdown === dropdown.label && <div className="menu-sub-links">
               {dropdown.items.map(item => item.href.startsWith('https://wa.me/')
-              ? <a href={item.href} key={item.href} target="_blank" rel="noreferrer" onClick={closeMobileMenu}>{item.label}</a>
+              ? <a href={item.href} key={item.href} target="_blank" rel="noreferrer" onClick={() => closeMobileMenu()}>{item.label}</a>
               : <Link href={item.href} key={item.href} onClick={closeMobileMenu}>{item.label}</Link>)}
             </div>}
           </div>)}
-          <a href="/#ikuti-kami" onClick={closeMobileMenu}><span className="menu-link-number">05</span><span>Kontak</span></a>
+          <a href={whatsappLink('Halo, saya ingin menghubungi North Production.')} target="_blank" rel="noreferrer" onClick={() => closeMobileMenu()}><span className="menu-link-number">05</span><span>Kontak</span></a>
         </div>
-        <a className="menu-contact-link" href={whatsappLink('Halo, saya ingin memulai proyek bersama North Production.')} target="_blank" rel="noreferrer" onClick={closeMobileMenu}>Mulai Proyek</a>
+        <a className="menu-contact-link" href={whatsappLink('Halo, saya ingin memulai proyek bersama North Production.')} target="_blank" rel="noreferrer" onClick={() => closeMobileMenu()}>Mulai Proyek</a>
       </motion.nav>}
     </AnimatePresence>
   </>

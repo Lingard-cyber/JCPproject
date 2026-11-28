@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from './SiteLink'
 import SiteHeader from './SiteHeader'
 import SiteFooter from './SiteFooter'
 import { productionServices } from '../layanan/services'
@@ -38,7 +38,7 @@ export default function InfoPage({ kind }: { kind: PageKind }) {
         <h1>{copy.title}</h1>
         <div className="info-hero-bottom">
           <p>{copy.description}</p>
-          <Link className="np-btn-primary" href="/#contact">Diskusikan proyek</Link>
+          <a className="np-btn-primary" href={whatsappLink('Halo, saya ingin berdiskusi tentang proyek bersama North Production.')} target="_blank" rel="noreferrer">Diskusikan proyek</a>
         </div>
       </section>
 

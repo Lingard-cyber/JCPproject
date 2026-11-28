@@ -1,6 +1,7 @@
-import Link from 'next/link'
+import Link from './SiteLink'
 import GradientWaves from './GradientWaves'
 import { whatsappLink } from '../contact'
+import { productionServices } from '../layanan/services'
 
 export default function SiteFooter() {
   return <footer className="np-footer">
@@ -8,9 +9,9 @@ export default function SiteFooter() {
       <div className="np-footer-waves" aria-hidden="true">
         <GradientWaves
           className="np-footer-waves-canvas"
-          horizonColor="#79518D"
-          waveColor="#69377D"
-          crestColor="#C58BD9"
+          horizonColor="#A855F7"
+          waveColor="#5212BA"
+          crestColor="#C084FC"
           backgroundColor="transparent"
           speed={0.16}
           amplitude={2.2}
@@ -31,9 +32,9 @@ export default function SiteFooter() {
           <p>PHOTO &middot; VIDEO<br />PRODUCTION</p>
         </div>
 
-        <Link className="np-footer-cta" href="/#contact">
+        <a className="np-footer-cta" href={whatsappLink('Halo, saya ingin memulai proyek kreatif bersama North Production.')} target="_blank" rel="noreferrer">
           <span>Mulai proyek kreatif Anda</span>
-        </Link>
+        </a>
 
         <div className="np-footer-grid">
           <div className="np-footer-col">
@@ -42,14 +43,11 @@ export default function SiteFooter() {
             <Link href="/layanan">Layanan</Link>
             <Link href="/harga">Daftar Harga</Link>
             <Link href="/contoh-foto-video">Contoh Foto &amp; Video</Link>
-            <Link href="/#contact">Kontak</Link>
+            <a href={whatsappLink('Halo, saya ingin menghubungi North Production.')} target="_blank" rel="noreferrer">Kontak</a>
           </div>
           <div className="np-footer-col">
             <h2 className="np-footer-col-title">Layanan</h2>
-            <Link href="/layanan">Foto Produk</Link>
-            <Link href="/layanan">Foto &amp; Video Event</Link>
-            <Link href="/layanan">Portrait &amp; Corporate</Link>
-            <Link href="/layanan">Company Profile</Link>
+            {productionServices.map(service => <Link href={`/layanan/${service.slug}`} key={service.slug}>{service.name}</Link>)}
           </div>
           <div className="np-footer-col np-footer-featured">
             <h2 className="np-footer-col-title">Terhubung</h2>

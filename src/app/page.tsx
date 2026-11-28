@@ -1,9 +1,10 @@
 'use client'
 
-import { motion, useReducedMotion } from 'motion/react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import SiteHeader from './components/SiteHeader'
 import SiteFooter from './components/SiteFooter'
+import HeroWaveScene from './components/HeroWaveScene'
 import { whatsappLink } from './contact'
 
 /* ─────────────────────────────────────────
@@ -125,13 +126,76 @@ const works = [
   },
 ]
 
-const socialGallery: { shortcode: string; image?: string }[] = [
-  { shortcode: 'DQd7UgJk8ea', image: '/social/DQd7UgJk8ea.webp' },
-  { shortcode: 'DQYMdZIk7dD', image: '/social/DQYMdZIk7dD.webp' },
-  { shortcode: 'DQydjeAk6e5', image: '/social/DQydjeAk6e5.webp' },
-  { shortcode: 'DQycrvHk1XJ', image: '/social/DQycrvHk1XJ.webp' },
-  { shortcode: 'DQk6H57k39D' },
-  { shortcode: 'DRoAEhCE-4N' },
+const socialGallery = [
+  {
+    shortcode: 'DQd7UgJk8ea',
+    image: '/social/DQd7UgJk8ea.webp',
+    alt: 'Dokumentasi acara dan kebersamaan tim North Production',
+    caption: 'Momen kebersamaan tim North Production dalam sebuah acara. 🤝',
+  },
+  {
+    shortcode: 'DQycrvHk1XJ',
+    image: '/social/DQycrvHk1XJ.webp',
+    alt: 'Keluarga berfoto bersama pada upacara pengukuhan guru besar UGM',
+    caption: 'Hari istimewa dalam pengukuhan Guru Besar Universitas Gadjah Mada. Selamat atas pencapaiannya! 🎓',
+  },
+  {
+    shortcode: 'DQydjeAk6e5',
+    image: '/social/DQydjeAk6e5.webp',
+    alt: 'Para guru besar UGM berfoto bersama setelah upacara pengukuhan',
+    caption: 'Mengabadikan suasana khidmat dan kebanggaan di Universitas Gadjah Mada.',
+  },
+  {
+    shortcode: 'DQYMdZIk7dD',
+    image: '/social/DQYMdZIk7dD.webp',
+    alt: 'Momen wisuda bersama keluarga dan lulusan UGM',
+    caption: 'Cerita di balik toga, senyum keluarga, dan perjalanan panjang yang akhirnya sampai di sini. 🎓',
+  },
+  {
+    shortcode: 'DQk5X_RgjM4',
+    image: '/social/DQk5X_RgjM4.webp',
+    alt: 'Komunitas mengikuti kegiatan yoga bersama di ruang terbuka',
+    caption: 'Bergerak dan bernapas bersama dalam kegiatan Komunitas Ayo Yoga.',
+  },
+  {
+    shortcode: 'DQf-uuYgvBL',
+    image: '/social/DQf-uuYgvBL.webp',
+    alt: 'Promosi Villa Laria di kawasan Parangtritis, Yogyakarta',
+    caption: 'Suasana tenang dan hamparan hijau di Villa Laria, Parangtritis — Yogyakarta.',
+  },
+  {
+    shortcode: 'ClBFxaIAgmv',
+    image: '/social/ClBFxaIAgmv.webp',
+    alt: 'Suasana adegan film pendek di sebuah ruangan klasik',
+    caption: 'Sepotong suasana dari produksi film pendek bersama North Production. 🎬',
+  },
+]
+
+const aboutSlides = [
+  {
+    title: 'RANGKAI',
+    description: 'Setiap produksi berawal dari cerita dan tujuan yang jelas. Kami merangkai arah visual bersama Anda sejak awal.',
+    cardTitle: 'Perjalanan Kolaboratif',
+    cardDescription: 'Proses kreatif yang terbuka, terarah, dan melibatkan ide dari awal.',
+    icon: <><circle cx="9" cy="8" r="3" /><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3a4.5 4.5 0 0 1 4.5 4.5V20M16 5.2a3 3 0 0 1 0 5.7m2 3.4a4.5 4.5 0 0 1 3 4.2V20" /></>,
+    art: <><rect x="12" y="18" width="38" height="52" rx="5" /><rect x="40" y="10" width="38" height="52" rx="5" /><rect x="68" y="18" width="38" height="52" rx="5" /><path d="M22 31h18M22 40h14M50 23h18M50 32h14M78 31h18M78 40h14" /></>,
+  },
+  {
+    title: 'ABADIKAN',
+    description: 'Foto dan video kami dibuat dengan perhatian pada detail, suasana, dan momen yang ingin disampaikan.',
+    cardTitle: 'Produksi Visual',
+    cardDescription: 'Dari konsep, eksekusi, hingga hasil siap tayang yang berdampak.',
+    icon: <><rect x="4" y="4" width="16" height="17" rx="2" /><path d="M9 4V2.5h6V4M8 10h8m-8 4 2 2 4-4m-6 7h8" /></>,
+    art: <><path d="M14 29h19l8-12h28l8 12h17a6 6 0 0 1 6 6v32a6 6 0 0 1-6 6H14a6 6 0 0 1-6-6V35a6 6 0 0 1 6-6Z" /><circle cx="53" cy="49" r="15" /><circle cx="53" cy="49" r="6" /><path d="M79 39h8M15 37h9" /></>,
+  },
+  {
+    title: 'GERAKKAN',
+    description: 'Hasil akhirnya adalah visual yang membantu brand lebih mudah terhubung dengan audiensnya.',
+    cardTitle: 'Dampak Nyata',
+    cardDescription: 'Karya visual yang tidak hanya menarik, tapi juga memberi hasil terukur.',
+    icon: <><path d="m3 8 9-5 9 5-9 5-9-5Zm0 8 9 5 9-5M3 12l9 5 9-5" /></>,
+    art: <><path d="M14 13V72h94M27 60l22-23 18 12 29-34M82 15h14v14" /><circle cx="27" cy="60" r="3" /><circle cx="49" cy="37" r="3" /><circle cx="67" cy="49" r="3" /><circle cx="96" cy="15" r="3" /></>,
+  },
 ]
 
 const marqueeItems = [
@@ -147,6 +211,9 @@ export default function NorthProductionPage() {
   const rm = useReducedMotion()
   const socialTrackRef = useRef<HTMLDivElement>(null)
   const [isSocialPaused, setIsSocialPaused] = useState(false)
+  const [activeAboutStep, setActiveAboutStep] = useState(0)
+  const [isAboutHovered, setIsAboutHovered] = useState(false)
+  const [isAboutFocused, setIsAboutFocused] = useState(false)
 
   const scrollSocial = useCallback((direction: -1 | 1) => {
     const track = socialTrackRef.current
@@ -165,6 +232,14 @@ export default function NorthProductionPage() {
     return () => window.clearInterval(timer)
   }, [isSocialPaused, rm, scrollSocial])
 
+  useEffect(() => {
+    if (rm || isAboutHovered || isAboutFocused) return
+    const timer = window.setInterval(() => {
+      setActiveAboutStep(current => (current + 1) % aboutSlides.length)
+    }, 5200)
+    return () => window.clearInterval(timer)
+  }, [isAboutFocused, isAboutHovered, rm])
+
   const fade = rm
     ? {}
     : { initial: { opacity: 0, y: 24 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: '-60px' }, transition: { duration: 0.6 } }
@@ -182,10 +257,21 @@ export default function NorthProductionPage() {
 
       <main id="main">
 
-        {/* ════════ HERO ════════ */}
-        <section className="np-hero" id="top" aria-label="North Production hero">
+        {/* ════════ HERO + SERVICES SHARED SCENE ════════ */}
+        <div className="np-hero-services-flow">
           <div className="np-hero-overlay" aria-hidden="true" />
 
+        {/* ════════ HERO ════════ */}
+        <section className="np-hero" id="top" aria-label="North Production hero">
+          <img
+            className="np-hero-background"
+            src="/hero-studio-background.png"
+            alt=""
+            width={1673}
+            height={940}
+            fetchPriority="high"
+          />
+          <HeroWaveScene />
           <div className="np-hero-body">
             {/* Eyebrow */}
             <motion.p className="np-hero-label" {...heroFade} transition={{ duration: 0.5 }}>
@@ -218,7 +304,7 @@ export default function NorthProductionPage() {
                 <a href="#layanan" className="np-btn-primary">
                   Lihat Layanan
                 </a>
-                <a href="#contact" className="np-btn-ghost">
+                <a href={whatsappLink('Halo, saya ingin berdiskusi tentang proyek bersama North Production.')} className="np-btn-ghost" target="_blank" rel="noreferrer">
                   Mulai Proyek
                 </a>
               </div>
@@ -266,7 +352,14 @@ export default function NorthProductionPage() {
               </article>
             ))}
           </motion.div>
+
+          <div className="np-services-curve" aria-hidden="true">
+            <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+              <path d="M0,0 Q720,156 1440,0 L1440,80 L0,80 Z" fill="#EBE5F7" />
+            </svg>
+          </div>
         </section>
+        </div>
 
         {/* ════════ PHILOSOPHY / ABOUT ════════ */}
         <motion.section
@@ -277,75 +370,91 @@ export default function NorthProductionPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-48px' }}
           transition={{ duration: rm ? 0 : 0.32, ease: 'easeOut' }}
+          onPointerEnter={() => setIsAboutHovered(true)}
+          onPointerLeave={() => setIsAboutHovered(false)}
+          onFocusCapture={() => setIsAboutFocused(true)}
+          onBlurCapture={event => {
+            if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setIsAboutFocused(false)
+          }}
         >
           <div className="np-identity-copy">
             <p className="np-identity-eyebrow">Tentang Kami</p>
-            <h2 className="np-identity-quote" id="np-identity-title">
-              Kami percaya cerita visual yang kuat mampu{' '}
-              <strong>menggerakkan audiens</strong> dan{' '}
-              <strong>memperkuat brand</strong> secara nyata.
-            </h2>
-            <p className="np-identity-intro">
-              North Production adalah partner kreatif untuk kebutuhan produksi foto, video, dan konten visual profesional di Yogyakarta dan seluruh Indonesia.
-            </p>
-            <a className="np-identity-link" href="#contact">
-              Kenal Lebih Dekat
-            </a>
+            <div className="np-identity-story">
+              <div className="np-identity-indicators" role="group" aria-label="Pilih tahap cerita North Production">
+                {aboutSlides.map((slide, index) => (
+                  <button
+                    className={index === activeAboutStep ? 'is-active' : ''}
+                    key={slide.title}
+                    type="button"
+                    aria-label={`Tampilkan ${slide.title.toLowerCase()}`}
+                    aria-pressed={index === activeAboutStep}
+                    onClick={() => setActiveAboutStep(index)}
+                  />
+                ))}
+              </div>
+              <div className="np-identity-story-copy">
+                <h2 className="np-identity-quote" id="np-identity-title">
+                  {aboutSlides.map((slide, index) => (
+                    <button
+                      className={index === activeAboutStep ? 'is-active' : ''}
+                      key={slide.title}
+                      type="button"
+                      aria-pressed={index === activeAboutStep}
+                      onClick={() => setActiveAboutStep(index)}
+                    >
+                      {slide.title}
+                    </button>
+                  ))}
+                </h2>
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.p
+                    className="np-identity-intro"
+                    key={activeAboutStep}
+                    aria-live="polite"
+                    initial={rm ? false : { opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={rm ? undefined : { opacity: 0, y: -8 }}
+                    transition={{ duration: rm ? 0 : 0.28, ease: 'easeOut' }}
+                  >
+                    {aboutSlides[activeAboutStep].description}
+                  </motion.p>
+                </AnimatePresence>
+                <a className="np-identity-link" href={whatsappLink('Halo, saya ingin mengenal layanan North Production lebih lanjut.')} target="_blank" rel="noreferrer">Kenal Lebih Dekat</a>
+              </div>
+            </div>
           </div>
 
           <div className="np-identity-showcase">
-            <div className="np-identity-principles">
-              {[
-                {
-                  number: '01',
-                  title: 'Produksi Visual',
-                  text: 'Foto, video, dan konten visual untuk kebutuhan komunikasi brand.',
-                  icon: <><rect x="3" y="6" width="18" height="15" rx="1.5" /><path d="M3 10h18M5 6l4 4m2-4 4 4m2-4 4 4" /></>,
-                },
-                {
-                  number: '02',
-                  title: 'Pendekatan Kolaboratif',
-                  text: 'Setiap proyek dirancang bersama berdasarkan tujuan dan kebutuhan visual klien.',
-                  icon: <><circle cx="9" cy="8" r="3" /><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3a4.5 4.5 0 0 1 4.5 4.5V20M16 5.2a3 3 0 0 1 0 5.7m2 3.4a4.5 4.5 0 0 1 3 4.2V20" /></>,
-                },
-                {
-                  number: '03',
-                  title: 'Dampak Nyata',
-                  text: 'Visual yang kuat membantu brand terhubung dengan audiensnya.',
-                  icon: <><path d="M4 19V5m0 14h17M8 15l3-4 3 2 5-7" /><path d="M15.5 6H19v3.5" /></>,
-                },
-              ].map(item => (
+            <p className="np-identity-showcase-intro">
+              North Production adalah partner kreatif untuk kebutuhan produksi foto, video, dan konten visual profesional di Yogyakarta dan seluruh Indonesia.
+            </p>
+            <div className="np-identity-principles" aria-label="Prinsip North Production">
+              <AnimatePresence mode="wait" initial={false}>
                 <motion.article
-                  className="np-identity-item"
-                  key={item.number}
-                  initial={rm ? false : { opacity: 0, y: 6 }}
+                  className="np-identity-principle-card"
+                  key={activeAboutStep}
+                  initial={rm ? false : { opacity: 0, y: 14 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: '-32px' }}
-                  transition={{ duration: rm ? 0 : 0.28, delay: rm ? 0 : Number(item.number) * 0.04, ease: 'easeOut' }}
+                  exit={rm ? undefined : { opacity: 0, y: -10 }}
+                  transition={{ duration: rm ? 0 : 0.34, ease: 'easeOut' }}
                 >
-                  <span className="np-identity-item-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{item.icon}</svg>
-                  </span>
-                  <div className="np-identity-item-content">
-                    <span className="np-identity-item-number">{item.number}</span>
-                    <h3 className="np-identity-item-label">{item.title}</h3>
-                    <p className="np-identity-item-text">{item.text}</p>
+                  <div className="np-identity-principle-surface">
+                    <span className="np-identity-item-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{aboutSlides[activeAboutStep].icon}</svg>
+                    </span>
+                    <div className="np-identity-item-content">
+                      <span className="np-identity-item-number">0{activeAboutStep + 1}</span>
+                      <h3 className="np-identity-item-label">{aboutSlides[activeAboutStep].cardTitle}</h3>
+                      <p className="np-identity-item-text">{aboutSlides[activeAboutStep].cardDescription}</p>
+                    </div>
+                    <span className="np-identity-card-art" aria-hidden="true">
+                      <svg viewBox="0 0 120 88" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{aboutSlides[activeAboutStep].art}</svg>
+                    </span>
                   </div>
                 </motion.article>
-              ))}
+              </AnimatePresence>
             </div>
-            <figure className="np-identity-photo">
-              <motion.div
-                className="np-identity-photo-reveal"
-                initial={rm ? false : { opacity: 0, scale: 1.02 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, margin: '-48px' }}
-                transition={{ duration: rm ? 0 : 0.45, ease: 'easeOut' }}
-              >
-                <img src="/about-production.jpg" alt="Fotografer mengambil gambar di area hijau" loading="lazy" />
-              </motion.div>
-              <figcaption>Di Balik Produksi</figcaption>
-            </figure>
           </div>
         </motion.section>
 
@@ -418,33 +527,30 @@ export default function NorthProductionPage() {
             onBlurCapture={() => setIsSocialPaused(false)}
           >
             {socialGallery.map((post, index) => (
-              <article className="np-social-photo" key={post.shortcode}>
-                {post.image ? (
-                  <a href={`https://www.instagram.com/p/${post.shortcode}/`} target="_blank" rel="noreferrer" aria-label={`Buka unggahan Instagram ${index + 1}`}>
-                    <img src={post.image} alt={`Foto dari unggahan Instagram North Production ${index + 1}`} loading="lazy" />
-                  </a>
-                ) : (
-                  <>
-                    <iframe
-                      className="np-social-embed"
-                      src={`https://www.instagram.com/p/${post.shortcode}/embed/?hidecaption=true`}
-                      title={`Unggahan Instagram North Production ${index + 1}`}
-                      loading="lazy"
-                      scrolling="no"
-                      allow="encrypted-media; picture-in-picture"
-                      tabIndex={-1}
-                      allowFullScreen
-                    />
-                    <a
-                      className="np-social-embed-link"
-                      href={`https://www.instagram.com/p/${post.shortcode}/`}
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label={`Buka unggahan Instagram ${index + 1}`}
-                    />
-                  </>
-                )}
-              </article>
+              <motion.article
+                className="np-social-photo np-social-post"
+                key={post.shortcode}
+                initial={rm ? false : { opacity: 0, scale: 1.035 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ root: socialTrackRef, once: true, amount: 0.25 }}
+                transition={{ duration: rm ? 0 : 0.45, delay: rm ? 0 : index * 0.035, ease: 'easeOut' }}
+              >
+                    <a className="np-social-post-image" href={`https://www.instagram.com/p/${post.shortcode}/`} target="_blank" rel="noreferrer" aria-label={`Buka postingan Instagram: ${post.caption}`}>
+                      <img src={post.image} alt={post.alt} loading="lazy" />
+                    </a>
+                    <div className="np-social-post-details">
+                      <div className="np-social-post-actions" aria-hidden="true">
+                        <span>
+                      <svg className="is-liked" viewBox="0 0 24 24" fill="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21l7.78-7.55 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z" /></svg>
+                      <svg viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.5 8.5 0 0 1-12.24 7.6L3 21l1.9-5.76A8.5 8.5 0 1 1 21 11.5Z" /></svg>
+                      <svg viewBox="0 0 24 24" fill="none"><path d="M22 2 11 13" /><path d="m22 2-7 20-4-9-9-4 20-7Z" /></svg>
+                        </span>
+                    <svg className="np-social-post-save" viewBox="0 0 24 24" fill="none"><path d="M7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-4-6 4V4.75A1.75 1.75 0 0 1 7.75 3Z" /></svg>
+                      </div>
+                      <p className="np-social-post-caption"><strong>north_production</strong> {post.caption}</p>
+                      <a className="np-social-post-comments" href={`https://www.instagram.com/p/${post.shortcode}/`} target="_blank" rel="noreferrer">Lihat postingan di Instagram</a>
+                    </div>
+              </motion.article>
             ))}
           </div>
           <div className="np-social-rule" aria-hidden="true" />
@@ -452,34 +558,21 @@ export default function NorthProductionPage() {
 
         {/* ════════ CTA BAND ════════ */}
         <motion.section className="np-cta-band" id="contact" {...fade}>
-          <div className="np-cta-photo" aria-hidden="true">
-            <img src="/north-collaboration.png" alt="" loading="lazy" />
-          </div>
-          <div className="np-cta-content">
-            <p className="np-cta-eyebrow">Mulai Kolaborasi</p>
-            <h2 className="np-cta-band-text">
-              Punya proyek yang ingin<br /><em>diwujudkan?</em>
-            </h2>
-            <p className="np-cta-description">
-              Ceritakan kebutuhan visual Anda kepada kami. Tim North Production siap merancang solusi kreatif untuk brand, bisnis, atau event Anda.
-            </p>
-            <div className="np-cta-benefits">
-              <article className="np-cta-benefit">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m13 2-9 12h7l-1 8 10-13h-7l1-7Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /></svg>
-                <div><h3>Respons Cepat</h3><p>Tim siap membantu</p></div>
-              </article>
-              <article className="np-cta-benefit">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5m-18 5 9 5 9-5" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /></svg>
-                <div><h3>Solusi Kreatif</h3><p>Sesuai kebutuhan brand</p></div>
-              </article>
-              <article className="np-cta-benefit">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3h8m-9 2H5v16h14V5h-2M8 12l3 3 5-6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                <div><h3>Profesional</h3><p>Dari ide hingga produksi</p></div>
-              </article>
+          <div className="np-cta-card">
+            <div className="np-cta-content">
+              <p className="np-cta-eyebrow">Mulai Kolaborasi</p>
+              <h2 className="np-cta-band-text">
+                Punya proyek yang ingin <em>diwujudkan?</em>
+              </h2>
+              <p className="np-cta-description">
+                Ceritakan kebutuhan visual Anda kepada kami. Tim North Production siap merancang solusi kreatif untuk brand, bisnis, atau event Anda.
+              </p>
             </div>
-            <a href={whatsappLink('Halo, saya ingin berdiskusi tentang proyek bersama North Production.')} className="np-cta-button" target="_blank" rel="noreferrer">
-              Mulai Percakapan
-            </a>
+            <div className="np-cta-action">
+              <a href={whatsappLink('Halo, saya ingin berdiskusi tentang proyek bersama North Production.')} className="np-cta-button" target="_blank" rel="noreferrer">
+                Mulai Percakapan <span aria-hidden="true">→</span>
+              </a>
+            </div>
           </div>
         </motion.section>
       </main>

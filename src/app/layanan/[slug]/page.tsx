@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import Link from '../../components/SiteLink'
 import { notFound } from 'next/navigation'
 import SiteFooter from '../../components/SiteFooter'
 import SiteHeader from '../../components/SiteHeader'
+import { whatsappLink } from '../../contact'
 import { productionServices } from '../services'
 
 type ServicePageProps = { params: Promise<{ slug: string }> }
@@ -27,7 +28,9 @@ export default async function ServicePage({ params }: ServicePageProps) {
   if (serviceIndex < 0) notFound()
 
   const service = productionServices[serviceIndex]
-  const otherServices = productionServices.filter(item => item.slug !== service.slug).slice(0, 3)
+  const otherServices = service.relatedSlugs
+    .map(relatedSlug => productionServices.find(item => item.slug === relatedSlug))
+    .filter((item): item is (typeof productionServices)[number] => Boolean(item))
 
   return <>
     <a className="skip-link" href="#main">Lewati ke konten utama</a>
@@ -36,14 +39,14 @@ export default async function ServicePage({ params }: ServicePageProps) {
       <section className="service-detail-hero">
         <div className="service-detail-copy">
           <nav className="service-breadcrumb" aria-label="Breadcrumb">
-            <Link href="/">Home</Link><span aria-hidden="true">/</span><Link href="/layanan">Layanan</Link>
+            <Link href="/">Home</Link><span aria-hidden="true">/</span><Link href="/layanan">Layanan</Link><span aria-hidden="true">/</span><span aria-current="page">{service.name}</span>
           </nav>
           <p className="np-section-tag">Layanan 0{serviceIndex + 1}</p>
           <h1>{service.name}</h1>
           <p className="service-detail-summary">{service.summary}</p>
-          <Link href={`/#contact`} className="np-btn-primary">
+          <a href={whatsappLink(`Halo, saya ingin mendiskusikan proyek ${service.name} bersama North Production.`)} className="np-btn-primary" target="_blank" rel="noreferrer">
             Diskusikan proyek
-          </Link>
+          </a>
         </div>
         <div className="service-detail-image">
           <img src={service.image} alt={service.imageAlt} />
@@ -54,7 +57,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
       <section className="service-detail-content">
         <div className="service-detail-intro">
           <p className="np-section-tag">Tentang layanan</p>
-          <h2>Visual yang dirancang untuk kebutuhan Anda.</h2>
+          <h2>{service.detailTitle}</h2>
         </div>
         <div className="service-detail-body">
           <p>{service.description}</p>
@@ -85,9 +88,9 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
       <section className="service-detail-cta">
         <p className="np-section-tag">North Production · Yogyakarta</p>
-        <h2>Siapkan proyek {service.name.toLowerCase()} Anda.</h2>
+        <h2>{service.ctaTitle}</h2>
         <p>Ceritakan kebutuhan, jadwal, dan tujuan visual Anda kepada tim kami.</p>
-        <Link href="/#contact" className="np-btn-primary">Mulai diskusi</Link>
+        <a href={whatsappLink(`Halo, saya ingin memulai proyek ${service.name} bersama North Production.`)} className="np-btn-primary" target="_blank" rel="noreferrer">Mulai diskusi</a>
       </section>
     </main>
     <SiteFooter />
